@@ -2,6 +2,7 @@
 #include "raymath.h"
 #include "Character.h"
 #include "Prop.h"
+#include "Enemy.h"
 
 int main()
 {
@@ -16,6 +17,8 @@ int main()
     const float mapScale = 4.0f;
 
     Character knight{WindowDimensions[0], WindowDimensions[1]};
+
+    Enemy goblin{Vector2{}, LoadTexture("characters/goblin_idle_spritesheet.png"), LoadTexture("characters/goblin_run_spritesheet.png")};
 
     Prop props[4]{
         Prop{Vector2{600.0f, 300.0f}, LoadTexture("nature_tileset/Rock.png")},
@@ -51,7 +54,7 @@ int main()
             knight.undoMovement();
         }
 
-        //check collision
+        // check collision
         for (auto prop : props)
         {
             if (CheckCollisionRecs(prop.getCollisionRec(knight.getWorldPos()), knight.getCollisionRec()))
@@ -59,6 +62,8 @@ int main()
                 knight.undoMovement();
             }
         }
+
+        goblin.tick(GetFrameTime());
 
         EndDrawing();
     }
