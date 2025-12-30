@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "raymath.h"
 
+
 Enemy::Enemy(Vector2 pos, Texture2D idle_texture, Texture2D run_texture)
     : worldPos(pos),
       texture(idle_texture),

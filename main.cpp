@@ -10,7 +10,7 @@ int main()
     WindowDimensions[0] = 386;
     WindowDimensions[1] = 386;
 
-    InitWindow(WindowDimensions[0], WindowDimensions[1], "Classy Slasher");
+    InitWindow(WindowDimensions[0], WindowDimensions[1], "Basic Slasher");
 
     Texture2D background = LoadTexture("nature_tileset/OpenWorldMap24x24.png");
     Vector2 MapPos{0.0f, 0.0f};
