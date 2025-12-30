@@ -2,7 +2,6 @@
 #include "raylib.h"
 #include "raymath.h"
 
-
 Enemy::Enemy(Vector2 pos, Texture2D idle_texture, Texture2D run_texture)
 {
     worldPos = pos;
@@ -15,19 +14,5 @@ Enemy::Enemy(Vector2 pos, Texture2D idle_texture, Texture2D run_texture)
 
 void Enemy::tick(float deltaTime)
 {
-    worldPosLastFrame = worldPos;
-
-    runningTime += deltaTime;
-    if (runningTime >= updateTime)
-    {
-        frame++;
-        runningTime = 0.0f;
-        if (frame > maxFrames)
-            frame = 0;
-    }
-
-    // Character
-    Rectangle source{frame * (float)texture.width / 6.0f, 0.0f, RightLeft * width, height};
-    Rectangle dest{screenPos.x, screenPos.y, scale * width, scale * height};
-    DrawTexturePro(texture, source, dest, Vector2{}, 0.0f, WHITE);
+    BaseCharacter::tick(deltaTime);
 }

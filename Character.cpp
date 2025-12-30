@@ -13,7 +13,7 @@ Character::Character(int winWidth, int winheight)
 
 void Character::tick(float deltaTime)
 {
-    worldPosLastFrame = worldPos;
+    BaseCharacter::tick(deltaTime);
     Vector2 Direction{};
     if (IsKeyDown(KEY_A))
         Direction.x -= 1.0;
@@ -35,19 +35,4 @@ void Character::tick(float deltaTime)
     {
         texture = idle;
     }
-
-    runningTime += deltaTime;
-    if (runningTime >= updateTime)
-    {
-        frame++;
-        runningTime = 0.0f;
-        if (frame > maxFrames)
-            frame = 0;
-    }
-
-    // Character
-    Rectangle source{frame * (float)texture.width / 6.0f, 0.0f, RightLeft * width, height};
-    Rectangle dest{screenPos.x, screenPos.y, scale * width, scale * height};
-    DrawTexturePro(texture, source, dest, Vector2{}, 0.0f, WHITE);
 }
-
