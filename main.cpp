@@ -19,6 +19,7 @@ int main()
     Character knight{WindowDimensions[0], WindowDimensions[1]};
 
     Enemy goblin{Vector2{}, LoadTexture("characters/goblin_idle_spritesheet.png"), LoadTexture("characters/goblin_run_spritesheet.png")};
+    goblin.setTarget(&knight);
 
     Prop props[4]{
         Prop{Vector2{600.0f, 300.0f}, LoadTexture("nature_tileset/Rock.png")},
