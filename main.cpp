@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "Prop.h"
 #include "Enemy.h"
+#include <string>
 
 int main()
 {
@@ -18,8 +19,14 @@ int main()
 
     Character knight{WindowDimensions[0], WindowDimensions[1]};
 
-    Enemy goblin{Vector2{}, LoadTexture("characters/goblin_idle_spritesheet.png"), LoadTexture("characters/goblin_run_spritesheet.png")};
-    goblin.setTarget(&knight);
+    Enemy goblin{Vector2{550.0f, 550.0f}, LoadTexture("characters/goblin_idle_spritesheet.png"), LoadTexture("characters/goblin_run_spritesheet.png")};
+    Enemy slime{Vector2{1000.0f, 750.0f}, LoadTexture("characters/slime_idle_spritesheet.png"), LoadTexture("characters/slime_run_spritesheet.png")};
+    Enemy *enemies[]{&goblin, &slime};
+
+    for (auto enemy : enemies)
+    {
+        enemy->setTarget(&knight);
+    }
 
     Prop props[4]{
         Prop{Vector2{600.0f, 300.0f}, LoadTexture("nature_tileset/Rock.png")},
@@ -44,6 +51,19 @@ int main()
             prop.Render(knight.getWorldPos());
         }
 
+        if (!knight.getAlive()) // character is dead
+        {
+            DrawText("Game Over!", 55.0f, 45.0f, 40, RED);
+            EndDrawing();
+            continue;
+        }
+        else
+        {
+            std::string knighHealth = "Health: ";
+            knighHealth.append(std::to_string(knight.getHealth()), 0, 5);
+            DrawText(knighHealth.c_str(), 0.0f, 0.0f, 40, RED);
+        }
+
         knight.tick(GetFrameTime());
 
         // check map bounds
@@ -64,7 +84,21 @@ int main()
             }
         }
 
-        goblin.tick(GetFrameTime());
+        for (auto enemy : enemies)
+        {
+            enemy->tick(GetFrameTime());
+        }
+
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            for (auto enemy : enemies)
+            {
+                if (CheckCollisionRecs(enemy->getCollisionRec(), knight.getWeaponCollisionRec()))
+                {
+                    enemy->setAlive(false);
+                }
+            }
+        }
 
         EndDrawing();
     }

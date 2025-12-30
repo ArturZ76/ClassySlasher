@@ -8,16 +8,20 @@ Character::Character(int winWidth, int winheight) : windowWidth(winWidth), windo
     height = texture.height;
 }
 
-Vector2 Character::getScreenPos() 
+Vector2 Character::getScreenPos()
 {
     return Vector2{
         static_cast<float>(windowWidth) / 2.0f - scale * (0.5f * width),
-        static_cast<float>(windowHeight) / 2.0f - scale * (0.5f * height)
-    };
+        static_cast<float>(windowHeight) / 2.0f - scale * (0.5f * height)};
 }
 
 void Character::tick(float deltaTime)
 {
+
+    if (!getAlive())
+    {
+        return;
+    }
 
     if (IsKeyDown(KEY_A))
         velocity.x -= 1.0;
@@ -29,4 +33,47 @@ void Character::tick(float deltaTime)
         velocity.y += 1.0;
 
     BaseCharacter::tick(deltaTime);
+
+    Vector2 origin{};
+    Vector2 offset{};
+    float rotation{};
+
+    if (RightLeft > 0.0f)
+    {
+        origin = {0.0f, weapon.height * scale};
+        offset = {35.0f, 55.0f};
+        weaponCollisionRect = {
+            getScreenPos().x + offset.x,
+            getScreenPos().y + offset.y - weapon.height * scale,
+            weapon.width * scale,
+            weapon.height * scale};
+
+        rotation = IsMouseButtonDown(MOUSE_LEFT_BUTTON) ? 35.0f : 0.0f;
+    }
+    else
+    {
+        origin = {weapon.width * scale, weapon.height * scale};
+        offset = {25.0f, 55.0f};
+        weaponCollisionRect = {
+            getScreenPos().x + offset.x - weapon.width * scale,
+            getScreenPos().y + offset.y - weapon.height * scale,
+            weapon.width * scale,
+            weapon.height * scale};
+        rotation = IsMouseButtonDown(MOUSE_LEFT_BUTTON) ? -35.0f : 0.0f;
+    }
+
+    // draw the sword
+    Rectangle source{0.0f, 0.0f, static_cast<float>(weapon.width) * RightLeft, static_cast<float>(weapon.height)};
+    Rectangle dest{getScreenPos().x + offset.x, getScreenPos().y + offset.y, weapon.width * scale, weapon.height * scale};
+    DrawTexturePro(weapon, source, dest, {origin}, rotation, WHITE);
+
+    // DrawRectangleLines(weaponCollisionRect.x, weaponCollisionRect.y, weaponCollisionRect.width, weaponCollisionRect.height, RED);
+}
+void Character::takeDamage(float damage)
+{
+    health -= damage;
+    if (health <= 0.0f)
+    {
+        setAlive(false);
+    }
 }
